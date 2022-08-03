@@ -26,6 +26,7 @@ namespace ui {
 			float		hp_total = -1.0,
 					hp_current = -1.0,
 					body_size = 0;
+			float		size = 0.0;
 			const char*	crown = "";
 		};
 

@@ -111,6 +111,7 @@ namespace {
 	bool get_data_single_monster(const size_t maddr, memory::browser& mb, ui::mhw_data::monster_info& m) {
 		const auto	realmaddr = maddr + offsets::Monster::MonsterStartOfStructOffset + offsets::Monster::MonsterHealthComponentOffset;
 		size_t		hcompaddr = 0;
+		int		isize = 0;
 		if(!mb.safe_read_mem<size_t>(maddr + offsets::Monster::MonsterHealthComponentOffset, hcompaddr, true))
 			return false;
 		const auto	id = mb.read_utf8(realmaddr + offsets::MonsterModel::IdOffset + 0x0c, offsets::MonsterModel::IdLength, true);
@@ -137,8 +138,11 @@ namespace {
 		const mhw_lookup::monster_data* m_stored_data = get_monster_stored_data(numid);
 		if(m_stored_data) {
 			m.name = m_stored_data->name;
-			const auto modified_size_scale = round(size_scale/scale_modifier*100)/100;
-			m.body_size = m_stored_data->base_size * modified_size_scale;
+			//std::cout <<  "size " << m.name << " " << std::to_string(modified_size_scale_raw) << std::endl;
+			const auto modified_size_scale = round((size_scale / scale_modifier) * 100) / 100;
+			m.size = m_stored_data->base_size * modified_size_scale;
+			m.body_size = m.size;
+			isize = (int)m.size;
 			const mhw_lookup::crown_preset_data* m_crown_preset = get_crown_preset(m_stored_data->crown_preset);
 			if (m_crown_preset) {
 				if (modified_size_scale <= m_crown_preset->mini)
@@ -149,6 +153,17 @@ namespace {
 					m.crown = "Silver";
 				else m.crown = "<none>";
 			}
+
+			if (numid == 17 && isize <= 1646) {m.crown = "Mini";} /* Lunastra */
+			if (numid == 17 && isize >= 2249) {m.crown = "Gold";} /* Lunastra */
+			if (numid == 68 && isize <= 1481) {m.crown = "Mini";} /* Fulgur Anjanath */
+			if (numid == 68 && isize >= 1975) {m.crown = "Gold";} /* Fulgur Anjanath */
+			if (numid == 74 && isize <= 1249) {m.crown = "Mini";} /* Ebony Odogaron */
+			if (numid == 74 && isize >= 1708) {m.crown = "Gold";} /* Ebony Odogaron */
+			if (numid == 76 && isize <= 1735) {m.crown = "Mini";} /* Seething Bazelgeuse */
+			if (numid == 76 && isize >= 2371) {m.crown = "Gold";} /* Seething Bazelgeuse */
+			if (numid == 89 && isize <= 1533) {m.crown = "Mini";} /* Silver Rathalos */
+			if (numid == 89 && isize >= 2096) {m.crown = "Gold";} /* Silver Rathalos */
 		}	
 		
 		return true;

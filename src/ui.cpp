@@ -17,7 +17,7 @@ extern void ui::draw(vbrush::iface* b, const size_t flags, const app_data& ad, c
 	EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEIIIIDDDDDDDDDDPPPPPP
 	 */ 
 	// if crown data is enabled, the total h_offset has ot be increased by 8
-	const unsigned	h_add_offset = ((flags & draw_flags::SHOW_CROWN_DATA) ? 8 : 0);
+	const unsigned	h_add_offset = ((flags & draw_flags::SHOW_CROWN_DATA) ? 16 : 0);
 	
 	if (!compact_display) {
 		// print title
@@ -98,7 +98,7 @@ extern void ui::draw(vbrush::iface* b, const size_t flags, const app_data& ad, c
 		b->next_row(compact_display ? 1 : 2);
 		// then Monsters - first header
 		if(flags & draw_flags::SHOW_CROWN_DATA)
-			std::snprintf(buf, 256, "%-32s%-14s%-8s%-8s", "Monster Name", "HP", "%","Crown");
+			std::snprintf(buf, 256, "%-26s%-14s%-8s%-8s%-10s", "Monster Name", "HP", "%","Crown","Size");
 		else
 			std::snprintf(buf, 256, "%-32s%-14s%-8s", "Monster Name", "HP", "%");
 		b->set_attr_on(vbrush::iface::attr::REVERSE);
@@ -116,7 +116,7 @@ extern void ui::draw(vbrush::iface* b, const size_t flags, const app_data& ad, c
 			b->next_row();
 			if(mi.hp_current <= 0.001) b->set_attr_on(vbrush::iface::attr::DIM);
 			if(flags & draw_flags::SHOW_CROWN_DATA)
-				std::snprintf(buf, 256, "%-32s %6d/%6d%8.2f%8s", mi.name, (int)mi.hp_current, (int)mi.hp_total, 100.0*mi.hp_current/mi.hp_total, mi.crown);
+				std::snprintf(buf, 256, "%-24s %6d/%6d%8.2f%8s%8.2f", mi.name, (int)mi.hp_current, (int)mi.hp_total, 100.0*mi.hp_current/mi.hp_total, mi.crown, mi.body_size);
 			else
 				std::snprintf(buf, 256, "%-32s %6d/%6d%8.2f", mi.name, (int)mi.hp_current, (int)mi.hp_total, 100.0*mi.hp_current/mi.hp_total);
 			b->draw_text(buf);
